@@ -26,17 +26,25 @@ custom:
       migrate: true
 
 package:
+  individually: true
   patterns:
     - '!./**'
     - '*.py'
 
 functions:
   get-users:
-    handler: get_users.handler
+    handler: get_users/get_users.handler
     events:
       - http:
           path: users/{id}
           method: GET
+
+  create-users:
+    handler: create_users/create_users.handler
+    events:
+      - http:
+          path: users
+          method: POST
 
 resources:
   Resources:
