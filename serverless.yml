@@ -1,12 +1,44 @@
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: serverless-crud
-
-frameworkVersion: '4'
 
 provider:
   name: aws
-  runtime: python3.12
+  runtime: python3.10
+
+plugins:
+  - serverless-dynamodb
+  - serverless-offline
+
+custom:
+  # dynamodb local
+  serverless-dynamodb:
+    stages:
+      - dev
+    start:
+      docker: true
+      port: 8000
+      inMemory: true
+      migrate: true
 
 functions:
-  hello:
-    handler: handler.hello
+  get-users:
+    handler: get_users.handler
+    events:
+      - http:
+          path: users
+          method: GET
+
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        TableName: users-table
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

@@ -18,3 +18,13 @@ var/
 
 # Serverless directories
 .serverless
+
+# virtual environment
+.venv/
+
+# serverless plugins node dependencies
+node_modules/
+.dynamodb/
+
+# Python
+__pycache__/
