@@ -8,9 +8,7 @@ dynamodb_params = {}
 if os.getenv("IS_OFFLINE"):
     dynamodb_params = {
         "region_name": "localhost",
-        "endpoint_url": "http://0.0.0.0:8000",
-        "aws_access_key_id": "DEFAULT_ACCESS_KEY",
-        "aws_secret_access_key": "DEFAULT_SECRET", 
+        "endpoint_url": "http://localhost:8000",
     }
 
 dynamodb = boto3.resource("dynamodb", **dynamodb_params)                              
@@ -26,4 +24,4 @@ def handler(event, context):
     print(f"{dynamodb_params=}")
     table.put_item(Item=user)
 
-    return {"statusCode": 200, "body": json.dumps(user)}
+    return {"statusCode": 201, "body": json.dumps(user)}
