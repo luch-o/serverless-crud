@@ -11,7 +11,7 @@ if os.getenv("IS_OFFLINE", False):
     }
 
 dynamodb = boto3.resource("dynamodb", **dynamodb_params)                              
-table = dynamodb.Table("users-table")
+table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 
 def handler(event, context):

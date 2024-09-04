@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
 
 custom:
+  table-name: users-table-${sls:stage}
   # dynamodb local
   serverless-dynamodb:
     stages:
@@ -34,6 +35,8 @@ package:
 functions:
   get-users:
     handler: get_users/get_users.handler
+    environment:
+      TABLE_NAME: ${self:custom.table-name}
     events:
       - http:
           path: users/{id}
@@ -41,6 +44,8 @@ functions:
 
   create-users:
     handler: create_users/create_users.handler
+    environment:
+      TABLE_NAME: ${self:custom.table-name}
     events:
       - http:
           path: users
@@ -57,7 +62,7 @@ resources:
         KeySchema:
           - AttributeName: pk
             KeyType: HASH
-        TableName: users-table
+        TableName: ${self:custom.table-name}
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
