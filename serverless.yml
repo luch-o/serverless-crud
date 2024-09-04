@@ -3,6 +3,12 @@ service: serverless-crud
 provider:
   name: aws
   runtime: python3.10
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: dynamodb:*
+          Resource: !GetAtt usersTable.Arn
 
 plugins:
   - serverless-dynamodb
@@ -19,12 +25,17 @@ custom:
       inMemory: true
       migrate: true
 
+package:
+  patterns:
+    - '!./**'
+    - '*.py'
+
 functions:
   get-users:
     handler: get_users.handler
     events:
       - http:
-          path: users
+          path: users/{id}
           method: GET
 
 resources:
