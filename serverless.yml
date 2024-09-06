@@ -29,14 +29,16 @@ custom:
 package:
   individually: true
   patterns:
-    - '!./**'
-    - '*.py'
+    - '!./**' # exclude everything by default
 
 functions:
   get-users:
     handler: get_users/get_users.handler
     environment:
       TABLE_NAME: ${self:custom.table-name}
+    package:
+      patterns:
+        - "get_users/*.py"
     events:
       - http:
           path: users/{id}
@@ -46,10 +48,25 @@ functions:
     handler: create_users/create_users.handler
     environment:
       TABLE_NAME: ${self:custom.table-name}
+    package: 
+      patterns:
+        - "create_users/*.py"
     events:
       - http:
           path: users
           method: POST
+
+  update-users:
+    handler: update_users/update_users.handler
+    environment:
+      TABLE_NAME: ${self:custom.table-name}
+    package:
+      patterns:
+        - "update_users/*.py"
+    events:
+      - http:
+          path: users/{id}
+          method: PATCH
 
 resources:
   Resources:
