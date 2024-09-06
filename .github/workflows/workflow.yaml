@@ -6,6 +6,15 @@ on:
 
 jobs:
   # TODO: install python dependencies if any and run python unit tests
+  testing-changes:
+    runs-on: ubuntu-latest
+    name: Build/Test
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: NPM - Install dependencies
+      if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
+      run: 'npm install'  
 
   deploy-env:
     name: Deploy Lambda
