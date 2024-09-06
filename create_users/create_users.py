@@ -21,7 +21,6 @@ def handler(event, context):
     body = json.loads(event["body"]) if "body" in event else {}
     user = body | {"pk": str(user_id)}
 
-    print(f"{dynamodb_params=}")
     table.put_item(Item=user)
 
     return {"statusCode": 201, "body": json.dumps(user)}
