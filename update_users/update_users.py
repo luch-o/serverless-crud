@@ -16,7 +16,7 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def handler(event, context):
     # generate and add id
-    user_id = user_id = event["pathParameters"]["id"]
+    user_id = event["pathParameters"]["id"]
     body = json.loads(event["body"]) if "body" in event else {}
 
     update_params = {
