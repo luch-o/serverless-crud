@@ -20,4 +20,7 @@ def handler(event, context):
     response = table.query(KeyConditionExpression=Key("pk").eq(user_id))
     user = response["Items"][0] if response["Items"] else {}
 
-    return {"statusCode": 200, "body": json.dumps({"user": user})}
+    return {
+        "statusCode": 200 if user else 404,
+        "body": json.dumps({"user": user}) if user else {}
+    }
