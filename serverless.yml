@@ -12,7 +12,7 @@ provider:
 
 plugins:
   - serverless-dynamodb
-  - serverless-offline
+  - serverless-offline # must be loaded after
 
 custom:
   table-name: users-table-${sls:stage}
@@ -67,6 +67,18 @@ functions:
       - http:
           path: users/{id}
           method: PATCH
+  
+  delete-users:
+    handler: delete_users/delete_users.handler
+    environment:
+      TABLE_NAME: ${self:custom.table-name}
+    package:
+      patterns:
+        - "delete_users/*.py"
+    events:
+      - http:
+          path: users/{id}
+          method: DELETE
 
 resources:
   Resources:
