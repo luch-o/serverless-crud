@@ -16,11 +16,11 @@ table = dynamodb.Table(os.getenv("TABLE_NAME"))
 
 def handler(event, context):
     user_id = event["pathParameters"]["id"]
-    print(f"{dynamodb_params=}")
+
     response = table.query(KeyConditionExpression=Key("pk").eq(user_id))
-    user = response["Items"][0] if response["Items"] else {}
+    user = response["Items"][0] if response.get("Items") else {}
 
     return {
         "statusCode": 200 if user else 404,
-        "body": json.dumps({"user": user}) if user else {}
+        "body": json.dumps({"user": user}) if user else ""
     }
