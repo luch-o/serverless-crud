@@ -9,6 +9,12 @@ provider:
         - Effect: Allow
           Action: dynamodb:*
           Resource: !GetAtt usersTable.Arn
+        - Effect: Allow
+          Action: s3:*
+          Resource: !Join 
+            - "/"
+            - - !GetAtt s3Bucket.Arn
+              - "*"
 
 plugins:
   - serverless-dynamodb
@@ -97,6 +103,22 @@ functions:
             parameters:
               paths:
                 id: true
+  
+  get-signed-url:
+    handler: get_signed_url/get_signed_url.handler
+    environment:
+      BUCKET: !Ref s3Bucket
+    package:
+      patterns:
+        - get_signed_url/get_signed_url.py
+    events:
+      - http:
+          path: signed-url
+          method: GET
+          request:
+            parameters:
+              querystrings:
+                filename: true
 
 resources:
   Resources:
