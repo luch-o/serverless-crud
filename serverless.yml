@@ -113,3 +113,27 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
+        
+    s3Bucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        BucketName: ${self:service}-${sls:stage}-static-content-bucket
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: false
+          BlockPublicPolicy: false
+
+    s3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref s3Bucket
+        PolicyDocument: 
+          Version: "2012-10-17"
+          Statement:
+            - Action: 
+                - "s3:getObject"
+              Effect: Allow
+              Resource: !Join 
+              - "/"
+              - - !GetAtt s3Bucket.Arn
+                - "*"
+              Principal: "*"
