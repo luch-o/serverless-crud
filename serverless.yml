@@ -5,18 +5,18 @@ provider:
   runtime: python3.10
   iam:
     role:
+      # default permissions
       statements:
         - Effect: Allow
-          Action: dynamodb:*
+          Action: 
+            - dynamodb:Query
+            - dynamodb:putItem
+            - dynamodb:updateItem
+            - dynamodb:deleteItem
           Resource: !GetAtt usersTable.Arn
-        - Effect: Allow
-          Action: s3:*
-          Resource: !Join 
-            - "/"
-            - - !GetAtt s3Bucket.Arn
-              - "*"
 
 plugins:
+  - serverless-iam-roles-per-function
   - serverless-dynamodb
   - serverless-offline # must be loaded after
 
@@ -35,7 +35,7 @@ custom:
 package:
   individually: true
   patterns:
-    - '!./**' # exclude everything by default
+    - "!./**" # exclude everything by default
     - utils/* # include utils module
 
 functions:
@@ -106,11 +106,20 @@ functions:
   
   get-signed-url:
     handler: get_signed_url/get_signed_url.handler
+    # override permissions
+    iamRoleStatements:
+      - Effect: Allow
+        Action: s3:putObject
+        Resource: !Join 
+          - "/"
+          - - !GetAtt s3Bucket.Arn
+            - "*"
     environment:
       BUCKET: !Ref s3Bucket
     package:
       patterns:
         - get_signed_url/get_signed_url.py
+        - "!utils/*" # exclude utils module
     events:
       - http:
           path: signed-url
