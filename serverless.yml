@@ -25,6 +25,7 @@ custom:
   pythonRequirements:
     dockerizePip: true
     slim: true
+    layer: true # a single layer is created for the whole service
     noDeploy:
       - boto3
   # dynamodb local
@@ -135,8 +136,9 @@ functions:
                 filename: true
     
   thumbnail:
-    handler: thumbnail.handler
-    module: thumbnail
+    handler: thumbnail/thumbnail.handler
+    layers:
+      - !Ref PythonRequirementsLambdaLayer   
     # override permissions
     iamRoleStatements:
       - Effect: Allow
