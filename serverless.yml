@@ -18,10 +18,15 @@ provider:
 plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb
-  - serverless-offline # must be loaded after
-
+  - serverless-offline
+  - serverless-python-requirements
 custom:
   table-name: users-table-${sls:stage}
+  pythonRequirements:
+    dockerizePip: true
+    slim: true
+    noDeploy:
+      - boto3
   # dynamodb local
   serverless-dynamodb:
     stages:
@@ -128,6 +133,37 @@ functions:
             parameters:
               querystrings:
                 filename: true
+    
+  thumbnail:
+    handler: thumbnail.handler
+    module: thumbnail
+    # override permissions
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:getObject
+        Resource: !Join 
+          - "/"
+          - - !GetAtt s3Bucket.Arn
+            - upload/*
+      - Effect: Allow
+        Action:
+          - s3:putObject
+        Resource: !Join 
+          - "/"
+          - - !GetAtt s3Bucket.Arn
+            - resized/*
+    package:
+      patterns:
+        - thumbnail/thumbnail.py
+        - "!utils/*"
+    events:
+      - s3:
+          bucket: !Ref s3Bucket
+          event: s3:ObjectCreated:*
+          existing: true
+          rules:
+            - prefix: upload/
 
 resources:
   Resources:
