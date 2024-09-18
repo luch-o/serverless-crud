@@ -40,11 +40,9 @@ package:
 
 layers:
   image-processing:
-    path: .Python/image_processing
     description: "Image processing dependencies"
     package: 
-      patterns:
-        - "**/*" # everything under layer directory
+      artifact: .Python/image_processing.zip
 
 functions:
   get-users:
