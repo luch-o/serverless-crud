@@ -19,15 +19,9 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb
   - serverless-offline
-  - serverless-python-requirements
+
 custom:
   table-name: users-table-${sls:stage}
-  pythonRequirements:
-    dockerizePip: true
-    slim: true
-    layer: true # a single layer is created for the whole service
-    noDeploy:
-      - boto3
   # dynamodb local
   serverless-dynamodb:
     stages:
@@ -43,6 +37,14 @@ package:
   patterns:
     - "!./**" # exclude everything by default
     - utils/* # include utils module
+
+layers:
+  image-processing:
+    path: .Python/image_processing
+    description: "Image processing dependencies"
+    package: 
+      patterns:
+        - "**/*" # everything under layer directory
 
 functions:
   get-users:
@@ -138,7 +140,7 @@ functions:
   thumbnail:
     handler: thumbnail/thumbnail.handler
     layers:
-      - !Ref PythonRequirementsLambdaLayer   
+      - !Ref ImageDashprocessingLambdaLayer
     # override permissions
     iamRoleStatements:
       - Effect: Allow
