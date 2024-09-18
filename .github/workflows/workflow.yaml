@@ -16,6 +16,18 @@ jobs:
       if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
       run: 'npm install'  
 
+  build-layers:
+    runs-on: ubuntu-latest
+    name: Build Layers
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: |
+        pip install -r thumbnail/requirements.txt -d .Python/image_processing/python/
+        zip -r image-processing.zip 
+    
+    - uses:
+
   deploy-env:
     permissions: 
       pull-requests: write 
