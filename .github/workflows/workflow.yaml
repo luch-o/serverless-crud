@@ -26,7 +26,7 @@ jobs:
         pip install -r thumbnail/requirements.txt -d .Python/image_processing/python/
         cd .Python/image_processing && zip -r ../image_processing.zip python/* && cd ../..
     
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       with:
         name: image_processing_layer
         path: .Python/image_processing.zip
@@ -51,7 +51,7 @@ jobs:
       if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
       run: 'npm install'
     
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
       with:
         name: image_processing_layer
         path: .Python/
