@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: |
-        pip install -r thumbnail/requirements.txt -d .Python/image_processing/python/
+        pip install -r thumbnail/requirements.txt -t .Python/image_processing/python/
         cd .Python/image_processing && zip -r ../image_processing.zip python/* && cd ../..
     
     - uses: actions/upload-artifact@v4
