@@ -1,13 +1,6 @@
 import os
 import boto3
-
-
-dynamodb_params = {}
-if os.getenv("IS_OFFLINE"):
-    dynamodb_params = {
-        "region_name": "localhost",
-        "endpoint_url": "http://localhost:8000",
-    }
+from utils.utils import dynamodb_params
 
 dynamodb = boto3.resource("dynamodb", **dynamodb_params)                              
 table = dynamodb.Table(os.getenv("TABLE_NAME"))

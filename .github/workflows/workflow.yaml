@@ -16,12 +16,27 @@ jobs:
       if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
       run: 'npm install'  
 
+  build-layers:
+    runs-on: ubuntu-latest
+    name: Build Layers
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: |
+        pip install -r thumbnail/requirements.txt -t .Python/image_processing/python/
+        cd .Python/image_processing && zip -r ../image_processing.zip python/* && cd ../..
+    
+    - uses: actions/upload-artifact@v4
+      with:
+        name: image_processing_layer
+        path: .Python/image_processing.zip
+
   deploy-env:
     permissions: 
       pull-requests: write 
     name: Deploy Lambda
     runs-on: ubuntu-latest
-    needs: testing-changes
+    needs: [testing-changes, build-layers]
     steps:
     - uses: actions/checkout@v2.0.0
 
@@ -35,6 +50,11 @@ jobs:
     - name: NPM - Install dependencies
       if: steps.cached-npm-dependencies.outputs.cache-hit != 'true'
       run: 'npm install'
+    
+    - uses: actions/download-artifact@v4
+      with:
+        name: image_processing_layer
+        path: .Python/
 
     - name: Deploy using sls
       run: 'npx sls deploy'
