@@ -66,6 +66,8 @@ constructs:
     type: queue
     worker:
       handler: like_user/like_user.handler
+      environment:
+        TABLE_NAME: ${self:custom.table-name}
       reservedConcurrency: 1
       package:
         patterns:
