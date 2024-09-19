@@ -19,9 +19,26 @@ plugins:
   - serverless-iam-roles-per-function
   - serverless-dynamodb
   - serverless-offline
+  - serverless-apigateway-service-proxy
+  - serverless-lift
 
 custom:
   table-name: users-table-${sls:stage}
+  like-queue-name: like-queue-${sls:stage}
+  apiGatewayServiceProxies:
+    - sqs:
+        path: /like-user
+        method: post
+        queueName: ${self:custom.like-queue-name}
+        cors: true
+        response:
+          templates:
+            success: |-
+              { "message": "accepted" }
+            clientError: |-
+              { "message": "there is an error in your request" }
+            serverError: |-
+              { "message": "there was an error handling your request"}
   # dynamodb local
   serverless-dynamodb:
     stages:
@@ -43,6 +60,20 @@ layers:
     description: "Image processing dependencies"
     package: 
       artifact: .Python/image_processing.zip
+
+constructs:
+  like-queue:
+    type: queue
+    worker:
+      handler: like_user/like_user.handler
+      reservedConcurrency: 1
+      package:
+        patterns:
+          - like_user/like_user.py
+    extensions:
+      queue:
+        Properties:
+          QueueName: ${self:custom.like-queue-name}
 
 functions:
   get-users:

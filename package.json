@@ -1,6 +1,8 @@
 {
   "devDependencies": {
+    "serverless-apigateway-service-proxy": "^2.2.1",
     "serverless-iam-roles-per-function": "^3.2.0",
+    "serverless-lift": "^1.30.2",
     "serverless-offline": "^13.8.0",
     "serverless-python-requirements": "^6.1.1"
   },
