@@ -16,10 +16,10 @@ def handler(event, context):
             "pk": user_id
         },
         UpdateExpression="ADD likes :inc",
-        ExpressionAtributeValues={
+        ExpressionAttributeValues={
             ":inc": 1
         },
         ReturnValues="ALL_NEW",
     )
-    
+
     print(response)
