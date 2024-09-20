@@ -3,9 +3,6 @@ service: serverless-crud
 provider:
   name: aws
   runtime: python3.10
-  apiGateway:
-    restApiId: ${self:custom.rest-api-id}
-    restApiRootResourceId: ${self:custom.rest-api-id}-root
   iam:
     role:
       # default permissions
@@ -28,7 +25,6 @@ plugins:
 custom:
   table-name: users-table-${sls:stage}
   like-queue-name: like-queue-${sls:stage}
-  rest-api-id: ${self:service}-${sls:stage}-api  
   apiGatewayServiceProxies:
     - sqs:
         path: /like-user
@@ -261,7 +257,7 @@ resources:
       Type: AWS::ApiGateway::Authorizer
       Properties:
         Name: cognito-api-authorizer
-        RestApiId: ${self:custom.rest-api-id}
+        RestApiId: !Ref ApiGatewayRestApi
         Type: COGNITO_USER_POOL
         IdentitySource: method.request.header.Authorization
         ProviderARNs:
