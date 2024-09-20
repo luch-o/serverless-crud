@@ -30,6 +30,7 @@ custom:
         path: /like-user
         method: post
         queueName: ${self:custom.like-queue-name}
+        authorizationType: COGNITO_USER_POOLS
         authorizerId: !Ref apiAuthorizer
         cors: true
         response:
