@@ -255,6 +255,11 @@ resources:
     userPool:
       Type: AWS::Cognito::UserPool
     
+    appClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId: !GetAtt userPool.UserPoolId
+
     apiAuthorizer:
       Type: AWS::ApiGateway::Authorizer
       Properties:
