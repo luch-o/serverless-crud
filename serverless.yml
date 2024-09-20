@@ -258,7 +258,7 @@ resources:
       Properties:
         Name: cognito-api-authorizer
         RestApiId: !Ref ApiGatewayRestApi
-        Type: COGNITO_USER_POOL
+        Type: COGNITO_USER_POOLS
         IdentitySource: method.request.header.Authorization
         ProviderARNs:
           - !GetAtt userPool.Arn
