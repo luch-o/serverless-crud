@@ -30,6 +30,7 @@ custom:
         path: /like-user
         method: post
         queueName: ${self:custom.like-queue-name}
+        authorizerId: !Ref apiAuthorizer
         cors: true
         response:
           template:
