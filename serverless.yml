@@ -3,6 +3,9 @@ service: serverless-crud
 provider:
   name: aws
   runtime: python3.10
+  apiGateway:
+    restApiId: ${self:custom.rest-api-id}
+    restApiRootResourceId: ${self:custom.rest-api-id}-root
   iam:
     role:
       # default permissions
@@ -25,6 +28,7 @@ plugins:
 custom:
   table-name: users-table-${sls:stage}
   like-queue-name: like-queue-${sls:stage}
+  rest-api-id: ${self:service}-${sls:stage}-api  
   apiGatewayServiceProxies:
     - sqs:
         path: /like-user
@@ -105,6 +109,7 @@ functions:
       - http:
           path: users
           method: POST
+          
           request:
             schemas:
               application/json: ${file(./schemas/user-schema.json)}
@@ -120,6 +125,9 @@ functions:
       - http:
           path: users/{id}
           method: PATCH
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               paths:
@@ -138,6 +146,9 @@ functions:
       - http:
           path: users/{id}
           method: DELETE
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               paths:
@@ -163,6 +174,9 @@ functions:
       - http:
           path: signed-url
           method: GET
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               querystrings:
@@ -239,3 +253,16 @@ resources:
               - - !GetAtt s3Bucket.Arn
                 - "*"
               Principal: "*"
+
+    userPool:
+      Type: AWS::Cognito::UserPool
+    
+    apiAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-api-authorizer
+        RestApiId: ${self:custom.rest-api-id}
+        Type: COGNITO_USER_POOL
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - !GetAtt userPool.Arn
