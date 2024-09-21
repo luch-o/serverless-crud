@@ -1,0 +1,19 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "title": "Authorization",
+    "type": "object",
+    "required": [
+        "username",
+        "password"
+    ],
+    "properties": {
+        "username": {
+            "type": "string"
+        },
+        "password": {
+            "type": "string",
+            "pattern": "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+        }
+
+    }
+}

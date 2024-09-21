@@ -1,0 +1,14 @@
+{
+    "$schema": "https://json-schema.org/draft-04/schema#",
+    "title": "RefreshToken",
+    "type": "object",
+    "required": [
+        "refresh_token",
+        "password"
+    ],
+    "properties": {
+        "refresh_token": {
+            "type": "string"
+        }
+    }
+}

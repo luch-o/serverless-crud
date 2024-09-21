@@ -2,7 +2,7 @@
 
 This repo is for the course project developed along serverless framework course in platzi.
 
-The goal is to achieve the same functionality with slight differences, like using python for all lambda functions, and complying with the principle of least privilege.
+The goal is to achieve the same functionality with slight differences, like using python for all lambda functions, complying with the principle of least privilege, and using Cognito User Pools authorization.
 
 ## Architecture
 
