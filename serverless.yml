@@ -324,6 +324,10 @@ resources:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         UserPoolId: !GetAtt userPool.UserPoolId
+        Properties:
+          ExplicitAuthFlows:
+            - ALLOW_USER_PASSWORD_AUTH
+            - ALLOW_REFRESH_TOKEN_AUTH
 
     apiAuthorizer:
       Type: AWS::ApiGateway::Authorizer
