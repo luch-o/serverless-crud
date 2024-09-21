@@ -242,6 +242,7 @@ functions:
       - Effect: Allow
         Action: 
           - cognito-idp:initiateAuth
+        Resource: !GetAtt userPool.Arn
     package:
       patterns:
         - authorization/sign_up.py
@@ -262,6 +263,7 @@ functions:
       - Effect: Allow
         Action: 
           - cognito-idp:initiateAuth
+        Resource: !GetAtt userPool.Arn
     package:
       patterns:
         - authorization/refresh_token.py
