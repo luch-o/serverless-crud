@@ -7,8 +7,9 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 
 
 def handler(event, context):
-    username = event["body"]["username"]
-    password = event["body"]["password"]
+    body = json.loads(event["body"])
+    username = body["username"]
+    password = body["password"]
 
     response = cognito_client.initiate_auth(
         AuthFlow="USER_PASSWORD_AUTH",

@@ -1,4 +1,5 @@
 import os
+import json
 import boto3
 
 cognito_client = boto3.client("cognito-idp")
@@ -7,8 +8,9 @@ USER_POOL_ID = os.getenv("USER_POOL_ID")
 
 
 def handler(event, context):
-    username = event["body"]["username"]
-    password = event["body"]["password"]
+    body = json.loads(event["body"])
+    username = body["username"]
+    password = body["password"]
 
     # signup
     cognito_client.sign_up(

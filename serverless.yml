@@ -213,7 +213,7 @@ functions:
   
   # Authorization functions
   register:
-    handler: authorization/register.py
+    handler: authorization/register.handler
     # override permissions
     iamRoleStatements:
       - Effect: Allow

@@ -7,7 +7,8 @@ CLIENT_ID = os.getenv("CLIENT_ID")
 
 
 def handler(event, context):
-    refresh_token = event["body"]["refresh_token"]
+    body = json.loads(event["body"])
+    refresh_token = body["refresh_token"]
 
     response = cognito_client.initiate_auth(
         AuthFlow="REFRESH_TOKEN",
