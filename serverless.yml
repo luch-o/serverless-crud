@@ -228,11 +228,11 @@ functions:
             schemas:
               application/json: ${file(schemas/authorization-schema.json)}
     
-  sign-up:
-    handler: authorization/sign_up.handler
+  sign-in:
+    handler: authorization/sign_in.handler
     package:
       patterns:
-        - authorization/sign_up.py
+        - authorization/sign_in.py
     environment:
       CLIENT_ID: !Ref appClient
     events:
