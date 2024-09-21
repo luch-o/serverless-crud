@@ -24,7 +24,7 @@ def handler(event, context):
         "statusCode": 200,
         "body": json.dumps(
             {
-                response["AuthenticationResult"][key]
+                key: response["AuthenticationResult"][key]
                 for key in ("AccessToken", "RefreshToken", "ExpiresIn")
             }
         )
