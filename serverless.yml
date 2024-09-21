@@ -109,7 +109,7 @@ functions:
           method: POST
           authorizer: 
             type: COGNITO_USER_POOLS
-            authorizerId: !Ref apiAuthorizers
+            authorizerId: !Ref apiAuthorizer
           request:
             schemas:
               application/json: ${file(./schemas/user-schema.json)}
