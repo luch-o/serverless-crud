@@ -121,7 +121,7 @@ functions:
     events:
       - http:
           path: users/{id}
-          method: PATCH
+          method: PUT
           authorizer: 
             type: COGNITO_USER_POOLS
             authorizerId: !Ref apiAuthorizer
@@ -237,11 +237,11 @@ functions:
       CLIENT_ID: !Ref appClient
     events:
       - http:
-        path: /token
-        method: POST
-        request:
-          schemas:
-            application/json: ${file(schemas/authorization-schema.json)}
+          path: /token
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/authorization-schema.json)}
 
   refresh-token:
     handler: authorization/refresh_token.handler
@@ -252,11 +252,11 @@ functions:
       CLIENT_ID: !Ref appClient
     events:
       - http:
-        path: /token/refresh
-        method: POST
-        request:
-          schemas:
-            application/json: ${file(schemas/refresh-token-schema.json)}
+          path: /token/refresh
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/refresh-token-schema.json)}
 
 resources:
   Resources:
