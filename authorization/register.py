@@ -18,7 +18,7 @@ def handler(event, context):
     )
 
     # admin confirm user
-    cognito_client.admin_confirm_user(
+    cognito_client.admin_confirm_sign_up(
         UserPoolId=USER_POOL_ID,
         Username=username,
     )
