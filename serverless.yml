@@ -107,6 +107,9 @@ functions:
       - http:
           path: users
           method: POST
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizers
           request:
             schemas:
               application/json: ${file(./schemas/user-schema.json)}
