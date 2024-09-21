@@ -228,35 +228,35 @@ functions:
             schemas:
               application/json: ${file(schemas/authorization-schema.json)}
     
-    sign-in:
-      handler: authorization/sign_in.handler
-      package:
-        patterns:
-          - authorization/sign_in.py
-      environment:
-        CLIENT_ID: !Ref appClient
-      events:
-        - http:
-          path: /token
-          method: POST
-          request:
-            schemas:
-              application/json: ${file(schemas/authorization-schema.json)}
+  sign-in:
+    handler: authorization/sign_in.handler
+    package:
+      patterns:
+        - authorization/sign_in.py
+    environment:
+      CLIENT_ID: !Ref appClient
+    events:
+      - http:
+        path: /token
+        method: POST
+        request:
+          schemas:
+            application/json: ${file(schemas/authorization-schema.json)}
 
-    refresh-token:
-      handler: authorization/refresh_token.handler
-      package:
-        patterns:
-          - authorization/refresh_token.py
-      environment:
-        CLIENT_ID: !Ref appClient
-      events:
-        - http:
-          path: /token/refresh
-          method: POST
-          request:
-            schemas:
-              application/json: ${file(schemas/refresh-token-schema.json)}
+  refresh-token:
+    handler: authorization/refresh_token.handler
+    package:
+      patterns:
+        - authorization/refresh_token.py
+    environment:
+      CLIENT_ID: !Ref appClient
+    events:
+      - http:
+        path: /token/refresh
+        method: POST
+        request:
+          schemas:
+            application/json: ${file(schemas/refresh-token-schema.json)}
 
 resources:
   Resources:
