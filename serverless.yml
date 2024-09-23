@@ -30,6 +30,8 @@ custom:
         path: /like-user
         method: post
         queueName: ${self:custom.like-queue-name}
+        authorizationType: COGNITO_USER_POOLS
+        authorizerId: !Ref apiAuthorizer
         cors: true
         response:
           template:
@@ -105,6 +107,9 @@ functions:
       - http:
           path: users
           method: POST
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             schemas:
               application/json: ${file(./schemas/user-schema.json)}
@@ -119,7 +124,10 @@ functions:
     events:
       - http:
           path: users/{id}
-          method: PATCH
+          method: PUT
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               paths:
@@ -138,6 +146,9 @@ functions:
       - http:
           path: users/{id}
           method: DELETE
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               paths:
@@ -163,6 +174,9 @@ functions:
       - http:
           path: signed-url
           method: GET
+          authorizer: 
+            type: COGNITO_USER_POOLS
+            authorizerId: !Ref apiAuthorizer
           request:
             parameters:
               querystrings:
@@ -199,6 +213,72 @@ functions:
           existing: true
           rules:
             - prefix: upload/
+  
+  # Authorization functions
+  register:
+    handler: authorization/register.handler
+    # override permissions
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - cognito-idp:SignUp
+          - cognito-idp:AdminConfirmSignUp
+        Resource: !GetAtt userPool.Arn
+    package:
+      patterns:
+        - authorization/register.py
+    environment:
+      CLIENT_ID: !Ref appClient
+      USER_POOL_ID: !GetAtt  userPool.UserPoolId
+    events:
+      - http:
+          path: /register
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/authorization-schema.json)}
+    
+  sign-in:
+    handler: authorization/sign_in.handler
+    # override permissions
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - cognito-idp:initiateAuth
+        Resource: !GetAtt userPool.Arn
+    package:
+      patterns:
+        - authorization/sign_in.py
+    environment:
+      CLIENT_ID: !Ref appClient
+    events:
+      - http:
+          path: /token
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/authorization-schema.json)}
+
+  refresh-token:
+    handler: authorization/refresh_token.handler
+    # override permissions
+    iamRoleStatements:
+      - Effect: Allow
+        Action: 
+          - cognito-idp:initiateAuth
+        Resource: !GetAtt userPool.Arn
+    package:
+      patterns:
+        - authorization/refresh_token.py
+    environment:
+      CLIENT_ID: !Ref appClient
+    events:
+      - http:
+          path: /token/refresh
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/refresh-token-schema.json)}
 
 resources:
   Resources:
@@ -239,3 +319,24 @@ resources:
               - - !GetAtt s3Bucket.Arn
                 - "*"
               Principal: "*"
+
+    userPool:
+      Type: AWS::Cognito::UserPool
+    
+    appClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId: !GetAtt userPool.UserPoolId
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+
+    apiAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        Name: cognito-api-authorizer
+        RestApiId: !Ref ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        IdentitySource: method.request.header.Authorization
+        ProviderARNs:
+          - !GetAtt userPool.Arn
